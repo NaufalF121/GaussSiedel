@@ -9,6 +9,22 @@ eq = [
     "3*x2 - x3 + 8*x4 - 15",
 ]
 
+
+import copy
+import sympy as sym
+from pprint import pprint
+
+class Gauss:
+    def __init__(self, _val:list) -> None:
+        self._val = []
+        self.__log = {0:
+                      self._val}
+    def include (self, __input:list, iter:int):
+        self._val = __input
+        self.__log[iter]= __input
+        
+    def output(self):
+        return self.__log
 class iterate:
     def __init__(self, _eq: list) -> None:
         self.eq = []
@@ -25,15 +41,13 @@ class iterate:
 
         self.x = {0: ["0"] * len(_eq)}
 
-        self.__log_iter = {
-            0: {
-                "iter": 0,
-                "xi": self.x[0],
-            }
-        }
+       
+        
     def solve(self, n_iter: int) -> list:
+        self.process = Gauss(self.x[0])
+
         for i in range(n_iter):
-            curr = self.x[i]
+            curr = copy.deepcopy(self.x[i])
             for j in range(len(self.eq)):
                 subs_dict = {
                     sym.Symbol(f"x{k+1}"): float(curr[k])
@@ -41,18 +55,18 @@ class iterate:
                 }
 
                 curr[j] = (self.eq[j].subs(subs_dict).evalf())
-            
             self.x[i+1] = curr
-            self.__log_iter[i + 1] = {
-                "iter": i + 1,
-                "xi": self.x[i + 1],
-            }
+            self.process.include(curr, i+1)
 
-        return self.x[n_iter]
+        self.hasil = self.x[n_iter]
     def output(self):
-        return self.eq, self.x
-    
-
+        return self.eq, self.hasil
+    def log(self ):
+        return self.process.output()
 if __name__ == "__main__":
-    jacobi = iterate(eq)
-    pprint(jacobi.solve(5))
+    gauss = iterate(eq)
+    gauss.solve(5)
+    eq, ans = gauss.output()
+    pprint(eq)
+    pprint(ans)
+    pprint(gauss.log())
