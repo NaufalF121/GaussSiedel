@@ -13,7 +13,14 @@ eq = [
 import copy
 import sympy as sym
 from pprint import pprint
-
+ 
+class convert:
+    def __init__(self, __eq:list) -> None:
+        self.matriks, self.vec  = sym.linear_eq_to_matrix(__eq, sym.symbols(f'x1:{len(__eq)+1}'))
+    def ouput(self):
+        return self.matriks, self.vec
+    def dominant(self):
+        return self.matriks.is_strongly_diagonally_dominant
 class Gauss:
     def __init__(self, _val:list) -> None:
         self._val = []
@@ -25,6 +32,8 @@ class Gauss:
         
     def output(self):
         return self.__log
+
+
 class iterate:
     def __init__(self, _eq: list) -> None:
         self.eq = []
